@@ -21,8 +21,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.android.devbyteviewer.database.getDatabase
 import com.example.android.devbyteviewer.repository.VideosRepository
+import kotlinx.coroutines.launch
 
 /**
  * DevByteViewModel designed to store and manage UI-related data in a lifecycle conscious way. This
@@ -40,6 +42,12 @@ class DevByteViewModel(application: Application) : AndroidViewModel(application)
     private val repository = VideosRepository(database)
 
     val playlist = repository.videos
+
+    init {
+        viewModelScope.launch {
+            repository.refreshVideos()
+        }
+    }
 
     /**
      * Factory for constructing DevByteViewModel with parameter
